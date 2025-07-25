@@ -2,6 +2,7 @@ package mortezamaghrebi.com.leitnerauto1100;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -34,6 +35,8 @@ import java.util.Map;
 import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
+
+import androidx.appcompat.app.AlertDialog;
 
 public class Controller {
     final String MY_PREFS_NAME = "PREFS_1100";
@@ -146,7 +149,28 @@ public class Controller {
         }
         cursor.close();
     }
+    void Dictionary(final String word) throws UnsupportedEncodingException {
+        String response ="";
+        String search=word.toLowerCase();
+        for(int i=0;i<wordItems.length;i++)
+        {
+            if(wordItems[i].word.toLowerCase().contains(search)) {
+                response +=wordItems[i].word+ ": Week: " + (1+(wordItems[i].day-1) / 4) + ", Day: " + (1+(wordItems[i].day-1) % 4) + "\r\n";
+            }
 
+        }
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle(word);
+        alertDialog.setMessage(response);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+        //Toast.makeText(context,"result:\n"+response,Toast.LENGTH_SHORT).show();
+    }
     public String getSaveString()
     {
         String savestr="[User:"+ getUser()+",Count:"+wordItems.length+"]WORDS(word,review,lastheart,started,finished){";

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -921,7 +923,7 @@ public class SecondActivity extends AppCompatActivity {
                 mpbutton.seekTo(0);mpbutton.start();
                 String word = txtword.getText().toString();
                 try {
-                    Dictionary(word);
+                    controller.Dictionary(word);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -929,7 +931,7 @@ public class SecondActivity extends AppCompatActivity {
         });
     }
 
-    void Dictionary(final String word) throws UnsupportedEncodingException {
+    void Dictionary_Online(final String word) throws UnsupportedEncodingException {
         RequestQueue queue = Volley.newRequestQueue(SecondActivity.this);
         StringRequest postRequest = new StringRequest(Request.Method.POST, uri,
                 new Response.Listener<String>() {

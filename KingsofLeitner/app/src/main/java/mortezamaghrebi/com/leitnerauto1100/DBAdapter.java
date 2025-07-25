@@ -140,11 +140,11 @@ public class DBAdapter extends SQLiteOpenHelper {
            this.getReadableDatabase(); // ایجاد مسیر databases
            this.close(); // دیتابیس خالی را ببند
            copyDatabase(); // کپی دیتابیس از assets
-           Toast.makeText(context,"Database copied from assets.",Toast.LENGTH_SHORT).show();
-           Log.d("DBAdapter", "Database copied from assets.");
+          // Toast.makeText(context,"Database copied from assets.",Toast.LENGTH_SHORT).show();
+          // Log.d("DBAdapter", "Database copied from assets.");
        } else {
-           Toast.makeText(context,"Database already exists.",Toast.LENGTH_SHORT).show();
-           Log.d("DBAdapter", "Database already exists.");
+          // Toast.makeText(context,"Database already exists.",Toast.LENGTH_SHORT).show();
+          // Log.d("DBAdapter", "Database already exists.");
        }
    }
     private void copyDatabase() {
@@ -168,9 +168,9 @@ public class DBAdapter extends SQLiteOpenHelper {
             myInput.close();
 
             File f = new File(outFileName);
-            Toast.makeText(context,"DB copied, size = " + f.length() + " , "+ size,Toast.LENGTH_SHORT).show();
+           // Toast.makeText(context,"DB copied, size = " + f.length() + " , "+ size,Toast.LENGTH_SHORT).show();
 
-            Log.d("DBAdapter", "DB copied, size = " + f.length() + " bytes");
+           // Log.d("DBAdapter", "DB copied, size = " + f.length() + " bytes");
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(context,"Error copy database: "+e.getMessage(),Toast.LENGTH_SHORT).show();

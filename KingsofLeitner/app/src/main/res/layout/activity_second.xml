@@ -255,12 +255,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center">
+
             <ImageView
                 android:id="@+id/imgchat"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_centerInParent="true"
                 android:background="#00000000"
+                android:visibility="invisible"
                 android:src="@drawable/chatt" />
         </RelativeLayout>
         <RelativeLayout
@@ -268,6 +270,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center">
+
             <ImageView
                 android:id="@+id/imgsearch"
                 android:layout_width="32dp"
@@ -280,7 +283,24 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/imgusers"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerInParent="true"
+                android:background="#00000000"
+                android:src="@drawable/userss"
+                android:visibility="invisible" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1">
+
             <ImageView
                 android:id="@+id/imghome"
                 android:layout_width="32dp"
@@ -290,20 +310,7 @@
                 android:src="@drawable/homee2" />
 
         </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center">
-            <ImageView
-                android:id="@+id/imgusers"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_centerInParent="true"
-                android:background="#00000000"
-                android:src="@drawable/userss" />
 
-        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -316,6 +323,7 @@
                 android:layout_height="32dp"
                 android:layout_centerInParent="true"
                 android:background="#00000000"
+                android:visibility="invisible"
                 android:src="@drawable/baskett" />
 
         </RelativeLayout>
@@ -1607,10 +1615,10 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
                         android:orientation="vertical"
-                        android:visibility="invisible">
+                        android:visibility="visible">
 
                         <EditText
                             android:id="@+id/txtword"
@@ -1626,9 +1634,10 @@
                             android:id="@+id/btnsearch"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="40dp"
-                            android:layout_marginRight="40dp"
-                            android:text="Search" />
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginRight="30dp"
+                            android:background="@drawable/button2a"
+                            android:text="Search in book" />
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>
