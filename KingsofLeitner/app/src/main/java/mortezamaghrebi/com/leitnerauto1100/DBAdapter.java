@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,7 +20,7 @@ public class DBAdapter extends SQLiteOpenHelper {
     private static final String TAG = "DBAdapter" ;
     private static String DB_NAME = "DB1100.db";
     private static String DB_PATH = "";
-
+    private static DBAdapter instance;
 
     // TODO: Setup your fields here:
     //Data Table
@@ -90,31 +93,64 @@ public class DBAdapter extends SQLiteOpenHelper {
 
 
     public DBAdapter(Context context) throws IOException {
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, DATABASE_VERSION);
         this.context = context;
         myDBHelper = new DatabaseHelper(context);
         DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
+        DB_PATH = context.getDatabasePath(DB_NAME).getParent() + "/";
     }
 
-   // public void createDatabaseIfNeeded() {
-   //     File dbFile = new File(DB_PATH + DB_NAME);
-   //     if (!dbFile.exists()) {
-   //         this.getReadableDatabase(); // ایجاد مسیر databases
-   //         copyDatabase();
+    public static synchronized DBAdapter getInstance(Context context) {
+        if (instance == null) {
+            try {
+                instance = new DBAdapter(context);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            instance.createDatabaseIfNeeded();
+            instance.open();
+        }
+        return instance;
+    }
+   // public boolean isDatabaseValid() {
+   //     SQLiteDatabase db = null;
+   //     try {
+   //         db = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READONLY);
+   //         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + DATABASE_TABLE, null);
+   //         if (cursor != null) {
+   //             cursor.moveToFirst();
+   //             int count = cursor.getInt(0);
+   //             cursor.close();
+   //             return count > 0;
+   //         }
+   //         return false;
+   //     } catch (Exception e) {
+   //         Log.e("DBAdapter", "Database validation error: " + e.getMessage());
+   //         return false;
+   //     } finally {
+   //         if (db != null) {
+   //             db.close();
+   //         }
    //     }
    // }
-    public void createDatabaseIfNeeded() {
-        File dbDir = new File(DB_PATH);
-        if (!dbDir.exists()) {
-            dbDir.mkdirs();
-            copyDatabase(); // کپی اجباری در هر اجرا
-        }
 
-    }
-
+   public void createDatabaseIfNeeded() {
+       File dbFile = new File(DB_PATH + DB_NAME);
+       if (!dbFile.exists()) {
+           this.getReadableDatabase(); // ایجاد مسیر databases
+           this.close(); // دیتابیس خالی را ببند
+           copyDatabase(); // کپی دیتابیس از assets
+           Toast.makeText(context,"Database copied from assets.",Toast.LENGTH_SHORT).show();
+           Log.d("DBAdapter", "Database copied from assets.");
+       } else {
+           Toast.makeText(context,"Database already exists.",Toast.LENGTH_SHORT).show();
+           Log.d("DBAdapter", "Database already exists.");
+       }
+   }
     private void copyDatabase() {
         try {
             InputStream myInput = context.getAssets().open(DB_NAME);
+            long size= myInput.available();
             File dbDir = new File(DB_PATH);
             if (!dbDir.exists()) dbDir.mkdirs();
 
@@ -130,12 +166,20 @@ public class DBAdapter extends SQLiteOpenHelper {
             myOutput.flush();
             myOutput.close();
             myInput.close();
+
+            File f = new File(outFileName);
+            Toast.makeText(context,"DB copied, size = " + f.length() + " , "+ size,Toast.LENGTH_SHORT).show();
+
+            Log.d("DBAdapter", "DB copied, size = " + f.length() + " bytes");
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(context,"Error copy database: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+
         }
     }
     public DBAdapter open() {
-        db = myDBHelper.getWritableDatabase();
+        db = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
+        //db = myDBHelper.getWritableDatabase();
         return  this;
     }
     public void close() { myDBHelper.close();}
@@ -144,6 +188,7 @@ public class DBAdapter extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

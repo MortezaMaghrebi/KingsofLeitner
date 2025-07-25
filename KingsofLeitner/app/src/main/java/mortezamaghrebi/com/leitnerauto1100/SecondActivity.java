@@ -791,7 +791,7 @@ public class SecondActivity extends AppCompatActivity {
         final RelativeLayout btnlearn = (RelativeLayout) findViewById(R.id.btnlearn);
         final RelativeLayout btnexam = (RelativeLayout) findViewById(R.id.btntest);
         final RelativeLayout btnmatch = (RelativeLayout) findViewById(R.id.btnmatch);
-        controller = new Controller(SecondActivity.this, false);
+        controller = new Controller(SecondActivity.this, true);
         txtexir1 = (TextView) findViewById(R.id.txtexir1);
         if (!inited) initControls();
         btnusersetting.setOnTouchListener(new View.OnTouchListener() {

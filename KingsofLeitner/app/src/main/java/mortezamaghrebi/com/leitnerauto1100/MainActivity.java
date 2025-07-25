@@ -46,35 +46,40 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         btnstart = (RelativeLayout)findViewById(R.id.btnstart);
         lytproga=(RelativeLayout)findViewById(R.id.lytproga);
         lytprogb=(RelativeLayout)findViewById(R.id.lytprogb);
-        Controller controller=new Controller(MainActivity.this,false);
-        controller.setUser("Guest");
-        controller.setPassword("1234");
+        Controller controller=new Controller(MainActivity.this,true);
+       if(controller.gethearts()<10)controller.addheart(10);
+        if(controller.getExir()<10) controller.increaseExir(10);
         if(controller.getPassword().equals(""))
         {
             nouser=true;
+            controller.setUser("1100 Words");
+            controller.setPassword("1234");
+            controller.setAvatar("");
+
         }
         else nouser=false;
-        //nouser=false;///
         cdd=new NoInternetDialogClass(MainActivity.this,controller);
         if(!nouser)
         {
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            width = size.x*8/10;
-            lytproga.getLayoutParams().width = width;
-            lytproga.requestLayout();
-            lytprogb.getLayoutParams().width = 0;
-            lytprogb.requestLayout();
-            progress=0;
-            lytproga.setVisibility(View.VISIBLE);
-            btnstart.setVisibility(View.INVISIBLE);
-        }
-      //  Intent secondact = new Intent(MainActivity.this, SecondActivity.class);
-      //  MainActivity.this.startActivity(secondact);
+           Display display = getWindowManager().getDefaultDisplay();
+           Point size = new Point();
+           display.getSize(size);
+           width = size.x*8/10;
+           lytproga.getLayoutParams().width = width;
+           lytproga.requestLayout();
+           lytprogb.getLayoutParams().width = 0;
+           lytprogb.requestLayout();
+           progress=0;
+           lytproga.setVisibility(View.VISIBLE);
+           btnstart.setVisibility(View.INVISIBLE);
+       }
+       //Intent secondact = new Intent(MainActivity.this, SecondActivity.class);
+       //MainActivity.this.startActivity(secondact);
       try {
            CheckInternet(true);
       } catch (UnsupportedEncodingException e) {
