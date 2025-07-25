@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="ltr"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:background="#ffd76b"
+
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:src="@drawable/kings"
+            android:layout_marginTop="15dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1100 WORDS"
+            android:layout_marginTop="0dp"
+            android:textColor="#cc1010"
+            android:fontFamily="serif"
+
+            android:textSize="25dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="   You Need to Know "
+            android:layout_marginTop="5dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:textColor="#ffffff"
+            android:gravity="center"
+            android:background="@drawable/curved1"
+            android:layout_marginRight="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="25dp"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/avatar"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="-110dp"
+            android:textSize="15dp"
+            android:textColor="#131514"
+            android:text="✔ Learn easy\n✔ Remember fast\n✔ Minimize forgetfulness"
+            />
+    </LinearLayout>
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_alignParentBottom="true"
+    android:layout_marginTop="20dp"
+    android:id="@+id/lytfooter"
+    android:layout_marginBottom="30dp"
+    android:gravity="center_horizontal"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="180dp"
+        android:layout_height="70dp"
+        android:visibility="invisible"
+        android:background="@drawable/curved2"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:id="@+id/btnstart"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start"
+            android:textSize="22dp"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_height="25dp"
+        android:visibility="invisible"
+        android:id="@+id/lytproga"
+        android:background="@drawable/curve_prograssa2"
+        android:layout_marginTop="25dp">
+
+        <RelativeLayout
+            android:layout_width="240dp"
+            android:layout_height="25dp"
+            android:id="@+id/lytprogb"
+            android:background="@drawable/curve_prograssb2"
+            ></RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>
+</RelativeLayout>

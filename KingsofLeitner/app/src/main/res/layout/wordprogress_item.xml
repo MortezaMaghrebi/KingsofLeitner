@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/lytworditem"
+    android:layout_height="wrap_content"
+    android:background="#efe4b0"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="26dp"
+            android:layout_height="wrap_content"
+            android:text="Week 45"
+            android:textSize="8dp"
+            android:gravity="center"
+            android:textColor="#606060"
+            android:id="@+id/txtweek"
+            android:layout_centerVertical="true"
+            />
+
+        <RelativeLayout
+            android:layout_width="150dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
+            android:layout_height="17dp"
+            android:id="@+id/lytwordprogres1"
+            android:background="@drawable/curve_wordprogress1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15 times shown"
+                android:textSize="7dp"
+                android:gravity="center"
+                android:textColor="#90505050"
+                android:id="@+id/txtshown"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="11dp"
+                android:layout_centerVertical="true"
+                />
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/curve_wordprogress2"
+                android:id="@+id/lytwordprogres2"
+                android:layout_alignParentRight="true">
+                <RelativeLayout
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/curve_wordprogress3"
+                    android:id="@+id/lytwordprogres3"
+                    android:layout_alignParentRight="true">
+                </RelativeLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="@drawable/curve_wordprogress4"
+                android:layout_height="match_parent">
+            </RelativeLayout>
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/txtword"
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prognosticate"
+            android:layout_toRightOf="@+id/txtweek"
+            android:textColor="#000000"
+            android:textSize="19dp"
+            android:textStyle="normal" />
+    </RelativeLayout>
+</RelativeLayout>

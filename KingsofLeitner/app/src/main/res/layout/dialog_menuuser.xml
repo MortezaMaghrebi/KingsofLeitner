@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:layoutDirection="ltr"
+    android:background="@drawable/curve_usermenu"
+    android:gravity="center_horizontal"
+    >
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/logocloud"
+        />
+
+    <RelativeLayout
+        android:layout_width="235dp"
+        android:layout_height="54dp"
+        android:id="@+id/lytpassword"
+        android:background="@drawable/outline_buttonusermenu"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginLeft="35dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/password"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Change Password"
+                android:textColor="#2e75b6"
+                android:textSize="16dp"
+                android:gravity="center"
+                android:layout_marginRight="15dp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="235dp"
+        android:layout_height="54dp"
+        android:id="@+id/lytsave"
+        android:background="@drawable/outline_buttonusermenu"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="35dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginLeft="35dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/syncon"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Online"
+                android:textColor="#2e75b6"
+                android:textSize="16dp"
+                android:gravity="center"
+                android:layout_marginRight="15dp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

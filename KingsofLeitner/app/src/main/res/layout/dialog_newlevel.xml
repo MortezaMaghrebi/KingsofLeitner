@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="470dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:orientation="vertical"
+    android:layoutDirection="ltr"
+    android:background="@drawable/curve_dialognotenough"
+    android:gravity="center_horizontal">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/lytfooter"
+        android:gravity="center"
+        android:layout_height="75dp">
+        <RelativeLayout
+            android:layout_width="110dp"
+            android:layout_height="44dp"
+            android:id="@+id/lytok"
+            android:background="@drawable/outline_button1"
+            android:gravity="center"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OK"
+                android:textColor="#be6275"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:layout_marginRight="0dp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_above="@+id/lytfooter"
+        android:layout_marginTop="15dp"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="260dp"
+            android:layout_height="212dp"
+            android:background="@drawable/ribbon"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                android:layout_marginTop="15dp"
+                android:text="35"
+                android:id="@+id/txtlevel"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#ffd700"
+                android:textSize="80dp"
+                android:gravity="center"
+                />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:src="@drawable/stars"
+                android:layout_alignParentBottom="true"
+                />
+
+        </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:text="Level Up"
+            android:id="@+id/txtlevelup"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="#ffd700"
+            android:textSize="60dp"
+            android:gravity="center"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:paddingRight="30dp"
+            android:paddingLeft="30dp"
+            android:layout_marginTop="10dp"
+            android:background="#70ffefaf"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="+1 "
+                android:textColor="#be6275"
+                android:textSize="20dp"
+                android:gravity="center_vertical|right"
+                android:layout_marginRight="5dp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                />
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/exir"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="+1 "
+                android:textColor="#ee3725"
+                android:textSize="20dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical|right"
+                android:layout_marginRight="5dp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                />
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/heart"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

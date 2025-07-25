@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:gravity="right|center_vertical"
+        android:id="@+id/lytuseritem"
+        android:layout_height="35dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:background="#505e9b6a"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:gravity="left"
+            android:text="User"
+            android:paddingLeft="3dp"
+            android:layout_toLeftOf="@+id/userit3"
+            android:id="@+id/userit4"
+            android:layout_marginRight="1dp"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="28dp"
+            android:background="#50e9b56a"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:layout_toLeftOf="@+id/userit2"
+            android:id="@+id/userit3"
+            android:gravity="center"
+            android:text="Level"
+            android:layout_marginRight="1dp"
+            />
+        <TextView
+            android:layout_width="65dp"
+            android:layout_height="28dp"
+            android:background="#5098a5b7"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/userit1"
+            android:id="@+id/userit2"
+            android:text="Plays"
+            android:layout_marginRight="1dp"
+            />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="28dp"
+            android:background="#50378264"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/userit1"
+            android:gravity="center"
+            android:text="Percent"
+            android:layout_marginRight="15dp"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>
