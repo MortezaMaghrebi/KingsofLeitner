@@ -54,9 +54,10 @@
             <ImageView
                 android:id="@+id/imgword"
                 android:layout_width="190dp"
-                android:layout_height="1dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="15dp"
                 android:background="#9f874b"
+                android:src="@drawable/gallery"
                 android:scaleType="fitCenter"
                 tools:ignore="Suspicious0dp" />
 

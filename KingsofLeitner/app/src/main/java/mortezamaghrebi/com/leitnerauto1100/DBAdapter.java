@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -281,7 +280,20 @@ public class DBAdapter extends SQLiteOpenHelper {
         return c;
     }
 
+    public boolean hasWordImage(String word) {
+        String where = key_word + " = ?";
+        Cursor c = db.query(
+                DATABASE_TABLE_IMAGE,
+                new String[] { key_word },
+                where,
+                new String[] { word },
+                null, null, null
+        );
 
+        boolean exists = (c != null && c.getCount() > 0);
+        if (c != null) c.close(); // یادت نره Cursor رو ببندی
+        return exists;
+    }
     public Boolean updateWordRowFromBackup(String word,int day,String persian,String definition,String pronounce,String sound,String example,String examplefa)
     {
         String where = key_word + "='" + word+"'";

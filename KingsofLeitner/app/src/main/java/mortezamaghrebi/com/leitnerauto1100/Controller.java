@@ -450,9 +450,16 @@ public class Controller {
         else  return null;
         return StringToWordImage(imstr);
     }
+
+    boolean hasWordImage(String word)
+    {
+       return myDB.hasWordImage(word);
+    }
     Bitmap setWordImage(String word,String image)
     {
-       myDB.insertWordImage(word,image);
+        Cursor currentImage=myDB.getWordImage(word);
+        if(currentImage.getCount()==0)myDB.insertWordImage(word,image);
+        else myDB.updateWordImage(word,image);
        return StringToWordImage(image);
     }
     //

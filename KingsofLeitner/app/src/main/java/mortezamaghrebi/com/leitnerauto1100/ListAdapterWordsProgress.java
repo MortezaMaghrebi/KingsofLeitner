@@ -20,8 +20,10 @@ public class ListAdapterWordsProgress extends ArrayAdapter<Integer> {
     Controller controller;
     int maxwidth;
     MediaPlayer mpbutton;
-    public ListAdapterWordsProgress(Activity context, Controller controller, List<Integer> items,int screenwidth) {
+    UserActivity userActivity;
+    public ListAdapterWordsProgress(UserActivity context, Controller controller, List<Integer> items,int screenwidth) {
         super(context, R.layout.wordprogress_item, items);
+        this.userActivity=context;
         this.mContext = (Context) context;
         this.controller = controller;
         this.maxwidth = screenwidth * 140 / 384;
@@ -43,7 +45,7 @@ public class ListAdapterWordsProgress extends ArrayAdapter<Integer> {
             RelativeLayout p2 = (RelativeLayout) v.findViewById(R.id.lytwordprogres2);
             RelativeLayout p3 = (RelativeLayout) v.findViewById(R.id.lytwordprogres3);
             RelativeLayout item = (RelativeLayout) v.findViewById(R.id.lytworditem);
-            word.setText(controller.wordItems[position].word);
+            word.setText(controller.wordItems[position].word + (controller.hasWordImage(controller.wordItems[position].word)?"":" *"));
             int day=controller.wordItems[position].day;
             int dayis=((day-1)%4)+1;
             int weekis=(int)((day-1)/4)+1;
@@ -68,7 +70,7 @@ public class ListAdapterWordsProgress extends ArrayAdapter<Integer> {
         public void onClick(View view) {
             int pos=Integer.parseInt(view.getTag().toString());
             mpbutton.seekTo(0);mpbutton.start();
-            WordDialogClass cdd = new WordDialogClass((Activity) mContext,controller.wordItems[pos],controller);
+            WordDialogClass cdd = new WordDialogClass(userActivity,controller.wordItems[pos],controller);
             cdd.show();
         }
     };

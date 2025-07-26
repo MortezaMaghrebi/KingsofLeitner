@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -31,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -46,14 +48,61 @@ public class UserActivity extends AppCompatActivity {
     Controller controller;
     final String uri_sendimage = "http://kingsofleitner.ir/words1100/webservice.php?get_command=sendimage,";
     final String uri_getimage = "http://kingsofleitner.ir/words1100/webservice.php?get_command=getimage,";
-
+    public static String lastRequestedWord;
     int RESULT_LOAD_IMG=110;
+    int RESULT_BROWSE_IMG=111;
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
+        if (resultCode == RESULT_OK && reqCode==RESULT_BROWSE_IMG && data !=null){
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap si = BitmapFactory.decodeStream(imageStream);
+                int width = si.getWidth();
+                int height= si.getHeight();
+                int min= Math.min(width,height);
+                int max=Math.max(width,height);
+                if(min>=150) {
+                    int w = Math.min(min, 220);
+                    double r = 1.0 * min / w;
+                    int dh = (height - min) / 2;
+                    int dw = (width - min) / 2;
+                    Bitmap bit = Bitmap.createBitmap(w, w, Bitmap.Config.RGB_565);
+                    try {
+                        for (int i = 0; i < w; i++) {
+                            for (int j = 0; j < w; j++) {
+                                int x = (int) (i * r + dw);
+                                if (x < 0) x = 0;
+                                else if (x >= width) x = width - 1;
+                                int y = (int) (j * r + dh);
+                                if (y < 0) y = 0;
+                                else if (y >= height) y = height - 1;
+                                bit.setPixel(i, j, si.getPixel(x, y));
+                            }
+                        }
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bit.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream .toByteArray();
+                        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                         controller.setWordImage(lastRequestedWord,encoded);
+                        Toast.makeText(UserActivity.this,"Image set for \'"+lastRequestedWord+"\'",Toast.LENGTH_SHORT).show();
 
+                    } catch (Exception e) {
+                        Toast.makeText(UserActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else Toast.makeText(UserActivity.this,"The image is too small, please select another one",Toast.LENGTH_LONG).show();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(UserActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+            }
 
-        if (resultCode == RESULT_OK && reqCode==RESULT_LOAD_IMG){
+        }else {
+            //Toast.makeText(UserActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+        }
+
+        if (resultCode == RESULT_OK && reqCode==RESULT_LOAD_IMG && data !=null){
             try {
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
@@ -92,7 +141,7 @@ public class UserActivity extends AppCompatActivity {
             }
 
         }else {
-            Toast.makeText(UserActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+            //Toast.makeText(UserActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
     }
     MediaPlayer mpbutton;
@@ -315,6 +364,7 @@ public class UserActivity extends AppCompatActivity {
         queue.add(postRequest);
 
     }
+
     void  getImage()  throws UnsupportedEncodingException
     {
 
