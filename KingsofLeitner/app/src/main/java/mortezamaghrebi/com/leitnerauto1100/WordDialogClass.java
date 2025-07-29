@@ -71,14 +71,18 @@ public class WordDialogClass extends Dialog {
                 txtword.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String url = null;
+                        String url1 = null;
+                        String url2 = null;
                         try {
-                            url = "https://www.google.com/search?tbm=isch&q=" + URLEncoder.encode(witem.word, "UTF-8");
+                            url1 = "https://www.google.com/search?tbm=isch&q=" + URLEncoder.encode(witem.word, "UTF-8");
+                            url2 = "https://www.google.com/search?tbm=isch&q=" + URLEncoder.encode(witem.word + " meaning", "UTF-8");
                         } catch (UnsupportedEncodingException e) {
                             throw new RuntimeException(e);
                         }
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        userActivity.startActivity(intent);
+                        Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(url1));
+                        userActivity.startActivity(intent1);
+                        Intent intent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url2));
+                        userActivity.startActivity(intent2);
                     }
                 });
                 imgword.setOnClickListener(new View.OnClickListener() {
