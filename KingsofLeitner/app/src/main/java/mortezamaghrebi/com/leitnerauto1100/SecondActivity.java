@@ -8,11 +8,15 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Base64;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -33,6 +37,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -52,10 +58,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class SecondActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE_READ_STORAGE = 606;
     TextView txtheart1, txtheart2, txtexir1, txtexir2, txtstar1, txtstar2, txtuser, txtavatarname, txtnummessages;
     RelativeLayout prgheart, prgexir, prgstar, prgref, btnmessages, btnusersetting, lytone;
     LinearLayout buyh1, buyh2, buyh3, buyp1, buyp2, buyp3, lyttwo, lytthree, lytbody,lytfour,lytfive;
@@ -86,7 +94,7 @@ public class SecondActivity extends AppCompatActivity {
 
     Boolean longs = false;
     int avatarindex = 1;
-
+    final int REQUEST_CODE_OPEN_DOCUMENT=609;
     void initControls() {
         mpbutton = MediaPlayer.create(SecondActivity.this, R.raw.clicksound);
         mpbutton.setVolume((float)(controller.getVolumeButtons()/100.0),(float)(controller.getVolumeButtons()/100.0));
@@ -929,6 +937,81 @@ public class SecondActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Button btnExportImages = (Button) findViewById(R.id.btnexportimages);
+        Button btnImportImages = (Button) findViewById(R.id.btnimportimages);
+        btnExportImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mpbutton.seekTo(0);mpbutton.start();
+                controller.backupImagesToDocuments(SecondActivity.this);
+            }
+        });
+
+        btnImportImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mpbutton.seekTo(0);mpbutton.start();
+
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.setType("text/plain");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(intent, REQUEST_CODE_OPEN_DOCUMENT);
+                }
+
+               else  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // if android 11+ request MANAGER_EXTERNAL_STORAGE
+                    if (!Environment.isExternalStorageManager()) { // check if we already have permission
+                        Uri uri = Uri.parse(String.format(Locale.ENGLISH, "package:%s", getApplicationContext().getPackageName()));
+                        startActivity(
+                                new Intent(
+                                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                                        uri
+                                )
+                        );
+                    }
+                } else {
+                    if (ContextCompat.checkSelfPermission(SecondActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) { // check if we already have permission
+                        ActivityCompat.requestPermissions(SecondActivity.this, new String[]{
+                                android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        }, REQUEST_CODE_READ_STORAGE);
+                    }else
+                    {
+                        controller.restoreImagesFromBackupDocuments(SecondActivity.this);
+                    }
+                }
+            }
+        });
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE_READ_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                controller.restoreImagesFromBackupDocuments(SecondActivity.this);
+            } else {
+                Toast.makeText(this, "Permission not accepted", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK)
+        {
+            if(requestCode==REQUEST_CODE_OPEN_DOCUMENT)
+            {
+                if (data != null) {
+                    Uri uri = data.getData();
+                   controller.importImagesFromUri(uri);
+                }
+            }
+        }
     }
 
     void Dictionary_Online(final String word) throws UnsupportedEncodingException {

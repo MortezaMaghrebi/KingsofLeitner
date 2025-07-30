@@ -279,7 +279,40 @@ public class DBAdapter extends SQLiteOpenHelper {
         if(c!=null){c.moveToFirst();}
         return c;
     }
+    public Cursor getAllImages()
+    {
+        String where = null;
+        Cursor c = db.query(true,DATABASE_TABLE_IMAGE,ALL_KEYS_IMAGE,
+                where, null,null,null,null,null);
+        if(c!=null){c.moveToFirst();}
+        return c;
+    }
+    public boolean deleteImage(long RowId){
+        String where = key_id + "=" + RowId;
+        return db.delete(DATABASE_TABLE_IMAGE,where,null) !=0;
+    }
+    public void deleteAllImages() {
+        // Passing null for the whereClause deletes all rows in the table
+         db.delete(DATABASE_TABLE_IMAGE, null, null);
+    }
+    public void deleteAllImages1()
+    {
+        Cursor c= getAllImages();
+        long rowId = c.getColumnIndexOrThrow(key_id);
+        if(c.moveToFirst()){
+            do{
+                try{
+                    deleteImage(c.getLong((int) rowId));
+                }catch (Exception e)
+                {
+                    Toast.makeText(context,"Error"+e.getMessage(),Toast.LENGTH_SHORT).show();
+                    break;
+                }
 
+            }while (c.moveToNext());
+        }
+        c.close();
+    }
     public boolean hasWordImage(String word) {
         String where = key_word + " = ?";
         Cursor c = db.query(

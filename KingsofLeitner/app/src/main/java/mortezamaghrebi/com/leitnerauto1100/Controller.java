@@ -1,5 +1,6 @@
 package mortezamaghrebi.com.leitnerauto1100;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,9 +9,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -20,12 +23,20 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,6 +59,7 @@ public class Controller {
     int[] heartOfBox={1,1,4,8,14,24,38,56,80,110,146,189,240,299,360};
     String encode = "پ,A~ر,B~ ,C~خ,D~و,E~،,F~س,G~ی,H~ن,I~ا,J~ذ,K~ب,L~ه,M~ک,N~د,O~ف,P~م,Q~ش,R~ج,S~ت,T~غ,U~ق,V~ز,W~آ,X~ل,Y~ژ,Z~گ,s~ض,b~ح,t~ط,d~چ,r~ث,f~ع,g~ص,h~ظ,i~ئ,j~-,k~p,l~e,m~n,n~a,o~c,p~ء,q";
     public wordItem[] wordItems;
+    public ImageItem[] imageItems;
     final String url = "http://kingsofleitner.ir/words1100/webservice.php";
     public final String infourl = "http://kingsofleitner.ir/words1100/info.php";
     final int DecreasExirEachMin=60; //use functions please: getDecreaseExirTime()
@@ -100,6 +112,178 @@ public class Controller {
             Log.e(TAG, "Error backing up database", e);
             return false;
         }
+    }
+
+    public boolean backupImagesToDocuments(Context context) {
+        try {
+            File docsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            if (!docsDir.exists()) docsDir.mkdirs();
+
+            File backupFile = new File(docsDir, "EnglishImages.txt");
+            FileOutputStream outChannel = new FileOutputStream(backupFile);
+            OutputStreamWriter writer = new OutputStreamWriter(outChannel);
+
+            getAllImages();
+
+            for (int i = 0; i < imageItems.length; i++) {
+                String len1=""+imageItems[i].word.length();
+                while(len1.length()<2)len1="0"+len1;
+                String len2=""+imageItems[i].base64image.length();
+                while(len2.length()<9)len2="0"+len2;
+                String line =len1+"+"+len2+"~"+ imageItems[i].word + "," + imageItems[i].base64image + "\n";
+                writer.write(line);
+            }
+
+            writer.close();
+            Toast.makeText(context,"Backup saved to Documents folder.",Toast.LENGTH_SHORT).show();
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Error backing up database", e);
+            Toast.makeText(context,"Error backing up database: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+    public void importImagesFromUri(Uri uri) {
+        try {
+            File docsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            File backupFile = new File(docsDir, "TempImages.txt");
+
+
+            try (InputStream in = context.getContentResolver().openInputStream(uri);
+                 OutputStream out = new FileOutputStream(backupFile)) {
+
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, len);
+                }
+                out.flush();
+            }
+
+
+            LoadImagesFromFile(backupFile);
+
+        } catch (Exception e) {
+            Toast.makeText(context,"Error restoring images from backup: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error restoring images from backup", e);
+        }
+    }
+    public boolean restoreImagesFromBackupDocuments(Context context) {
+        try {
+            int newwords=0,duplicatewords=0;
+            File docsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            File backupFile = new File(docsDir, "EnglishImages.txt");
+            if (!backupFile.exists()) {
+                Log.e(TAG, "Backup file does not exist");
+                return false;
+            }
+            LoadImagesFromFile(backupFile);
+            return true;
+
+        } catch (Exception e) {
+            Toast.makeText(context,"Error restoring images from backup: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error restoring images from backup", e);
+            return false;
+        }
+    }
+    int newwords = 0, duplicatewords = 0;
+
+    public void LoadImagesFromFile(File backupFile) {
+        AlertDialog progressDialog;
+        TextView progressText;
+
+        // Create and show the progress dialog on the UI thread
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Restoring images...");
+        progressText = new TextView(context);
+        progressText.setPadding(32, 48, 32, 48);
+        progressText.setText("Starting...");
+        builder.setView(progressText);
+        builder.setCancelable(false);
+        progressDialog = builder.create();
+        progressDialog.show();
+        myDB.deleteAllImages();
+        // Run the file loading process in a separate thread
+        new Thread(() -> {
+            int total = 0;
+
+            try {
+                RandomAccessFile raf = new RandomAccessFile(backupFile, "r");
+
+                while (raf.getFilePointer() < raf.length()) {
+
+                    byte[] lenWordBytes = new byte[2];
+                    raf.readFully(lenWordBytes);
+                    int lenWord = Integer.parseInt(new String(lenWordBytes, StandardCharsets.UTF_8));
+
+                    byte separator = raf.readByte();
+                    if (separator != (byte) '+') throw new IOException("Expected '+' not found.");
+
+                    byte[] lenImageBytes = new byte[9];
+                    raf.readFully(lenImageBytes);
+                    int lenImage = Integer.parseInt(new String(lenImageBytes, StandardCharsets.UTF_8));
+
+                    separator = raf.readByte();
+                    if (separator != (byte) '~') throw new IOException("Expected '~' not found.");
+
+                    byte[] wordBytes = new byte[lenWord];
+                    raf.readFully(wordBytes);
+                    String word = new String(wordBytes, StandardCharsets.UTF_8);
+
+                    separator = raf.readByte();
+                    if (separator != (byte) ',') throw new IOException("Expected ',' not found.");
+
+                    if (hasWordImage(word)) {
+                        // Skip base64 image bytes and the newline character
+                        raf.seek(raf.getFilePointer() + lenImage + 1);
+                        duplicatewords++;
+                    } else {
+                        byte[] base64Bytes = new byte[lenImage];
+                        raf.readFully(base64Bytes);
+
+                        separator = raf.readByte();
+                        if (separator != (byte) '\n') throw new IOException("Expected '\\n' not found.");
+
+                        String base64Image = new String(base64Bytes, StandardCharsets.UTF_8);
+                        setWordImage(word, base64Image);
+                        newwords++;
+                    }
+
+                    total++;
+
+                    // Update the progress dialog text on the UI thread
+                    int finalNew = newwords;
+                    int finalDup = duplicatewords;
+                    int finalTotal = total;
+                    ((Activity) context).runOnUiThread(() -> {
+                        progressText.setText(
+                                "Total processed: " + finalTotal +
+                                        "\nNew images: " + finalNew +
+                                        "\nDuplicate images: " + finalDup);
+                    });
+                }
+
+                raf.close();
+
+                // Show final result dialog on the UI thread
+                ((Activity) context).runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                    alertDialog.setTitle("Restore Images");
+                    alertDialog.setMessage("Backup loaded successfully:\nNew Images: " + newwords + "\nDuplicate Images: " + duplicatewords);
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            (dialog, which) -> dialog.dismiss());
+                    alertDialog.show();
+                });
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error restoring images from backup", e);
+                ((Activity) context).runOnUiThread(() -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Error restoring images: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            }
+        }).start();
     }
 
     private  void copyFile(File src, File dst) throws Exception {
@@ -461,6 +645,24 @@ public class Controller {
         if(currentImage.getCount()==0)myDB.insertWordImage(word,image);
         else myDB.updateWordImage(word,image);
        return StringToWordImage(image);
+    }
+
+    public ImageItem[] getAllImages()
+    {
+        Cursor cursor=myDB.getAllImages();
+        imageItems = new ImageItem[cursor.getCount()];
+        int k = 0;
+        if (cursor.moveToFirst()) {
+            do {
+                imageItems[k] = new ImageItem();
+                imageItems[k].id = cursor.getInt(DBAdapter.COL_id);
+                imageItems[k].word = cursor.getString(DBAdapter.COL_word);
+                imageItems[k].base64image = cursor.getString(DBAdapter.COL_image);
+                k++;
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return imageItems;
     }
     //
     private int getLevelTarget(int level) //if number of correct answers arrive targets level increases; each level releases 20 words;

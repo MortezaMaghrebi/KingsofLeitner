@@ -1639,6 +1639,25 @@
                             android:background="@drawable/button2a"
                             android:text="Search in book" />
                     </LinearLayout>
+                    <Button
+                        android:id="@+id/btnexportimages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/button2a"
+                        android:text="Export Image Database" />
+
+                    <Button
+                        android:id="@+id/btnimportimages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/button2a"
+                        android:text="Import Image Database" />
                 </LinearLayout>
             </ScrollView>
                 <ImageView
