@@ -301,23 +301,78 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="امتیاز شما:"
+                        android:text="تعداد پاسخ صحیح:"
                         android:textSize="15dp"
                         android:id="@+id/txtscore"
                         android:layout_marginTop="12dp"
-                        android:textColor="#000000"
+                        android:textColor="#e0fFa0"
+                        android:gravity="center"
+                        />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="پاسخ صحیح:"
+                        android:textSize="28dp"
+                        android:id="@+id/txtanswer"
+                        android:layout_marginTop="30dp"
+                        android:textColor="#efffff"
                         android:gravity="center"
                         />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="پاسخ صحیح:"
-                        android:textSize="17dp"
-                        android:id="@+id/txtanswer"
-                        android:layout_marginTop="10dp"
+                        android:text="پیشرفت این لغت:"
+                        android:textSize="14dp"
+                        android:id="@+id/txtprogress"
+                        android:layout_marginTop="40dp"
                         android:textColor="#ffffff"
                         android:gravity="center"
                         />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="35dp"
+                        android:layout_marginLeft="35dp"
+                        android:layout_centerVertical="true"
+                        android:layout_height="20dp"
+                        android:id="@+id/lytwordprogres1"
+                        android:background="@drawable/curve_wordprogress1_learn">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="15 times shown"
+                            android:textSize="12dp"
+                            android:gravity="center"
+                            android:textColor="#F0505050"
+                            android:id="@+id/txtshown"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="11dp"
+                            android:layout_centerVertical="true"
+                            />
+                        <RelativeLayout
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/curve_wordprogress2"
+                            android:id="@+id/lytwordprogres2"
+                            android:layout_alignParentRight="true">
+                            <RelativeLayout
+                                android:layout_width="30dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/curve_wordprogress3"
+                                android:id="@+id/lytwordprogres3"
+                                android:layout_alignParentRight="true">
+                            </RelativeLayout>
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:background="@drawable/curve_wordprogress4_learn"
+                            android:layout_height="match_parent">
+                        </RelativeLayout>
+
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout

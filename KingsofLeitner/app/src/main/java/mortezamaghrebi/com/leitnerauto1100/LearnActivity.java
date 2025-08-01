@@ -39,9 +39,9 @@ import java.util.Random;
 
 public class LearnActivity extends AppCompatActivity {
 
-    RelativeLayout lytques,lytans1,lytans2,lytans3,lytans4,lytproga,lytprogb,btnhelp1,btnhelp2,btnhelp3,btnnext,btneasy,lytactionbuttons;
+    RelativeLayout lytques,lytans1,lytans2,lytans3,lytans4,lytproga,lytprogb,btnhelp1,btnhelp2,btnhelp3,btnnext,btneasy,lytactionbuttons,p1,p2,p3;
     LinearLayout lytwait,lytchoices,lytcontent,lythelps;
-    TextView txtnum,txtques,txtweek,txtans1,txtans2,txtans3,txtans4,txtscore,txtanswer,txtnext;
+    TextView txtnum,txtques,txtweek,txtans1,txtans2,txtans3,txtans4,txtscore,txtanswer,txtnext,txtprogress;
     ImageView imgpron,imgwordimage;
     Controller controller;
     int[] questionsIndex;
@@ -280,6 +280,10 @@ public class LearnActivity extends AppCompatActivity {
         txtans4= (TextView)findViewById(R.id.txtans4);
         txtscore= (TextView)findViewById(R.id.txtscore);
         txtanswer= (TextView)findViewById(R.id.txtanswer);
+        txtprogress = (TextView) findViewById(R.id.txtprogress);
+        p1 = (RelativeLayout) findViewById(R.id.lytwordprogres1);
+        p2 = (RelativeLayout) findViewById(R.id.lytwordprogres2);
+        p3 = (RelativeLayout) findViewById(R.id.lytwordprogres3);
         txtnext= (TextView)findViewById(R.id.txtnext);
         imgpron = (ImageView)findViewById(R.id.imgpron);
         imgwordimage = (ImageView)findViewById(R.id.imgwordimage);
@@ -357,9 +361,9 @@ public class LearnActivity extends AppCompatActivity {
         imgpron.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isproun=!isproun;
-                controller.setIsPronounce(isproun);
-                imgpron.setImageResource(isproun?pronsrc[0]:pronsrc[1]);
+                //isproun=!isproun;
+                //controller.setIsPronounce(isproun);
+                //imgpron.setImageResource(isproun?pronsrc[0]:pronsrc[1]);
                 if(ttsinit&&isproun) tts.speak(controller.wordItems[questionsIndex[currentQuestionIndex]].word + "!?", TextToSpeech.QUEUE_ADD, null);
             }
         });
@@ -599,6 +603,9 @@ public class LearnActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                TextView shown = (TextView) findViewById(R.id.txtshown);
+
+
                 int height = lytcontent.getMeasuredHeight();
                 helpheight= lythelps.getMeasuredHeight();
                 lythelps.getLayoutParams().height=0;
@@ -608,8 +615,17 @@ public class LearnActivity extends AppCompatActivity {
                 lytwait.requestLayout();
                 lytchoices.getLayoutParams().height = 1;
                 lytchoices.requestLayout();
-                txtscore.setText("امتیاز شما: "+corrects);
-                txtanswer.setText("پاسخ صحیح:"+controller.wordItems[questionsIndex[currentQuestionIndex]].persian);
+                txtscore.setText("تعداد پاسخ صحیح: "+corrects);
+                txtanswer.setText(controller.wordItems[questionsIndex[currentQuestionIndex]].persian);
+                txtprogress.setText("درصد پیشرفت این لغت: "+(controller.wordItems[questionsIndex[currentQuestionIndex]].box()*100/15)+"%");
+                shown.setText(""+controller.wordItems[questionsIndex[currentQuestionIndex]].review.length()+" times shown");
+                int maxwidth=p1.getMeasuredWidth();
+                int greenwitdh=maxwidth*controller.wordItems[questionsIndex[currentQuestionIndex]].box()/15;
+                int redwidth =greenwitdh*controller.wordItems[questionsIndex[currentQuestionIndex]].wrongpercent()/1000;
+                p2.getLayoutParams().width =greenwitdh;
+                p3.getLayoutParams().width =redwidth;
+                p1.requestLayout();p2.requestLayout();p3.requestLayout();
+
                 try {
                     showimage=true;
                     getImage(controller.wordItems[questionsIndex[currentQuestionIndex]].word);
