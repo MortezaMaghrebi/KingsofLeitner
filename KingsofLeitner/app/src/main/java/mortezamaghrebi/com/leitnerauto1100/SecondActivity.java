@@ -2,6 +2,7 @@ package mortezamaghrebi.com.leitnerauto1100;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -940,11 +942,12 @@ public class SecondActivity extends AppCompatActivity {
 
         Button btnExportImages = (Button) findViewById(R.id.btnexportimages);
         Button btnImportImages = (Button) findViewById(R.id.btnimportimages);
+        Button btnDeleteImages = (Button) findViewById(R.id.btndeleteallimages);
         btnExportImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mpbutton.seekTo(0);mpbutton.start();
-                controller.backupImagesToDocuments(SecondActivity.this);
+                controller.backupImagesToDocumentsWithProgress(SecondActivity.this);
             }
         });
 
@@ -971,6 +974,8 @@ public class SecondActivity extends AppCompatActivity {
                                         uri
                                 )
                         );
+                    }else {
+                        controller.restoreImagesFromBackupDocuments(SecondActivity.this);
                     }
                 } else {
                     if (ContextCompat.checkSelfPermission(SecondActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -983,6 +988,31 @@ public class SecondActivity extends AppCompatActivity {
                         controller.restoreImagesFromBackupDocuments(SecondActivity.this);
                     }
                 }
+            }
+        });
+
+        btnDeleteImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mpbutton.seekTo(0);mpbutton.start();
+                new AlertDialog.Builder(SecondActivity.this)
+                        .setTitle("Confirm Deletion")
+                        .setMessage("Are you sure you want to delete all images?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                boolean result = controller.deleteAllImages(SecondActivity.this);
+                                if(result) Toast.makeText(SecondActivity.this,"All images deleted",Toast.LENGTH_SHORT).show();
+                                else Toast.makeText(SecondActivity.this,"Error occurred in image deletion",Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
             }
         });
 

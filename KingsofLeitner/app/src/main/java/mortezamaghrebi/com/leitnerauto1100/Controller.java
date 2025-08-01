@@ -114,7 +114,79 @@ public class Controller {
             return false;
         }
     }
+    public boolean deleteAllImages(Context context) {
+        try {
+            myDB.deleteAllImages();
+            return true;
+        }catch (Exception e)
+        {
+            return  false;
+        }
+    }
 
+    public void backupImagesToDocumentsWithProgress(Context context) {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Backing Up");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(false);
+        getAllImages(); // Make sure this is thread-safe
+        progressDialog.setMax(imageItems.length); // Set max progress
+        progressDialog.show();
+
+        new Thread(() -> {
+            boolean success = true;
+            try {
+                File docsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                if (!docsDir.exists()) docsDir.mkdirs();
+
+                File backupFile = new File(docsDir, "EnglishImages.txt");
+                FileOutputStream outChannel = new FileOutputStream(backupFile);
+                OutputStreamWriter writer = new OutputStreamWriter(outChannel);
+
+                getAllImages(); // Make sure this is thread-safe
+
+                for (int i = 0; i < imageItems.length; i++) {
+                    String len1 = "" + imageItems[i].word.length();
+                    while (len1.length() < 2) len1 = "0" + len1;
+
+                    Bitmap bit = base64ToBitmap(imageItems[i].base64image);
+                    String base64;
+                    if (bit.getWidth() > 220 || bit.getHeight() > 220) {
+                        Bitmap resizedbit = resizeImageToFitDatabase(bit);
+                        base64 = bitmapToBase64(resizedbit);
+                    } else base64 = bitmapToBase64(bit);
+
+                    String len2 = "" + base64.length();
+                    while (len2.length() < 9) len2 = "0" + len2;
+
+                    String line = len1 + "+" + len2 + "~" + imageItems[i].word + "," + base64 + "\n";
+                    writer.write(line);
+
+                    int finalI = i;
+                    // Update progress on UI thread
+                    ((Activity) context).runOnUiThread(() -> progressDialog.setProgress(finalI + 1));
+                }
+
+                writer.close();
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error backing up database", e);
+                success = false;
+                String errMsg = e.getMessage();
+                ((Activity) context).runOnUiThread(() ->
+                        Toast.makeText(context, "Error backing up database: " + errMsg, Toast.LENGTH_LONG).show());
+            }
+
+            boolean finalSuccess = success;
+            ((Activity) context).runOnUiThread(() -> {
+                progressDialog.dismiss();
+                if (finalSuccess) {
+                    Toast.makeText(context, "Backup saved to Documents folder.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).start();
+    }
     public boolean backupImagesToDocuments(Context context) {
         try {
             File docsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
@@ -130,8 +202,11 @@ public class Controller {
                 String len1=""+imageItems[i].word.length();
                 while(len1.length()<2)len1="0"+len1;
                 Bitmap bit = base64ToBitmap(imageItems[i].base64image);
-                Bitmap resizedbit=resizeImageToFitDatabase(bit);
-                String base64 = bitmapToBase64(resizedbit);
+                String base64;
+                if(bit.getWidth()>220 || bit.getHeight()>220) {
+                    Bitmap resizedbit = resizeImageToFitDatabase(bit);
+                    base64 = bitmapToBase64(resizedbit);
+                }else base64=bitmapToBase64(bit);
                 String len2=""+base64.length();
                 while(len2.length()<9)len2="0"+len2;
                 String line =len1+"+"+len2+"~"+ imageItems[i].word + "," + base64 + "\n";

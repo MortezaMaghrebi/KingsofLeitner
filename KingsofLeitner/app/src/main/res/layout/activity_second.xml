@@ -1645,7 +1645,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="15dp"
                         android:background="@drawable/button2a"
                         android:text="Export Image Database" />
 
@@ -1655,9 +1655,19 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="15dp"
                         android:background="@drawable/button2a"
                         android:text="Import Image Database" />
+
+                    <Button
+                        android:id="@+id/btndeleteallimages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/button3a"
+                        android:text="Delete All Images" />
                 </LinearLayout>
             </ScrollView>
                 <ImageView
