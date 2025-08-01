@@ -59,40 +59,13 @@ public class UserActivity extends AppCompatActivity {
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap si = BitmapFactory.decodeStream(imageStream);
-                int width = si.getWidth();
-                int height= si.getHeight();
-                int min= Math.min(width,height);
-                int max=Math.max(width,height);
+                Bitmap bit= controller.resizeImageToFitDatabase(si);
+                int min = Math.min(bit.getWidth(),bit.getHeight());
                 if(min>=150) {
-                    int w = Math.min(min, 220);
-                    double r = 1.0 * min / w;
-                    int dh = (height - min) / 2;
-                    int dw = (width - min) / 2;
-                    Bitmap bit = Bitmap.createBitmap(w, w, Bitmap.Config.RGB_565);
-                    try {
-                        for (int i = 0; i < w; i++) {
-                            for (int j = 0; j < w; j++) {
-                                int x = (int) (i * r + dw);
-                                if (x < 0) x = 0;
-                                else if (x >= width) x = width - 1;
-                                int y = (int) (j * r + dh);
-                                if (y < 0) y = 0;
-                                else if (y >= height) y = height - 1;
-                                bit.setPixel(i, j, si.getPixel(x, y));
-                            }
-                        }
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        bit.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                        byte[] byteArray = byteArrayOutputStream .toByteArray();
-                        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                         controller.setWordImage(lastRequestedWord,encoded);
-                        Toast.makeText(UserActivity.this,"Image set for \'"+lastRequestedWord+"\'",Toast.LENGTH_SHORT).show();
+                    controller.setWordImageFromBase64(lastRequestedWord, controller.bitmapToBase64(bit));
+                    Toast.makeText(UserActivity.this, "Image resized and set for " + lastRequestedWord, Toast.LENGTH_LONG).show();
+                }else Toast.makeText(UserActivity.this, "Image size too small", Toast.LENGTH_LONG).show();
 
-                    } catch (Exception e) {
-                        Toast.makeText(UserActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else Toast.makeText(UserActivity.this,"The image is too small, please select another one",Toast.LENGTH_LONG).show();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(UserActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();

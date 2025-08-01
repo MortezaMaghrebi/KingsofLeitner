@@ -1,6 +1,9 @@
 package mortezamaghrebi.com.leitnerauto1100;
 
 import android.graphics.Bitmap;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
 
 public class ImageItem {
     public int id;
@@ -23,5 +26,7 @@ public class ImageItem {
     {
 
     }
+
+
 }
 

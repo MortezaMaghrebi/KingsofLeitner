@@ -712,7 +712,7 @@ public class LearnActivity extends AppCompatActivity {
                             try {
                                 if (response.length() > 200) {
 
-                                    Bitmap bit = controller.setWordImage(word,response);
+                                    Bitmap bit = controller.setWordImageFromBase64(word,response);
                                     if(bit!=null && showimage) {
                                         try {
                                             imgwordimage.setImageBitmap(bit);

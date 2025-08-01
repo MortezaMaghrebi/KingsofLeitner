@@ -308,7 +308,6 @@ public class DBAdapter extends SQLiteOpenHelper {
                     Toast.makeText(context,"Error"+e.getMessage(),Toast.LENGTH_SHORT).show();
                     break;
                 }
-
             }while (c.moveToNext());
         }
         c.close();

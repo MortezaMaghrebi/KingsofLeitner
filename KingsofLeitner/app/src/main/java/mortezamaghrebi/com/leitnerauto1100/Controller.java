@@ -24,6 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -128,9 +129,12 @@ public class Controller {
             for (int i = 0; i < imageItems.length; i++) {
                 String len1=""+imageItems[i].word.length();
                 while(len1.length()<2)len1="0"+len1;
-                String len2=""+imageItems[i].base64image.length();
+                Bitmap bit = base64ToBitmap(imageItems[i].base64image);
+                Bitmap resizedbit=resizeImageToFitDatabase(bit);
+                String base64 = bitmapToBase64(resizedbit);
+                String len2=""+base64.length();
                 while(len2.length()<9)len2="0"+len2;
-                String line =len1+"+"+len2+"~"+ imageItems[i].word + "," + imageItems[i].base64image + "\n";
+                String line =len1+"+"+len2+"~"+ imageItems[i].word + "," + base64 + "\n";
                 writer.write(line);
             }
 
@@ -202,7 +206,7 @@ public class Controller {
         builder.setCancelable(false);
         progressDialog = builder.create();
         progressDialog.show();
-        myDB.deleteAllImages();
+
         // Run the file loading process in a separate thread
         new Thread(() -> {
             int total = 0;
@@ -245,7 +249,10 @@ public class Controller {
                         if (separator != (byte) '\n') throw new IOException("Expected '\\n' not found.");
 
                         String base64Image = new String(base64Bytes, StandardCharsets.UTF_8);
-                        setWordImage(word, base64Image);
+                        Bitmap bit= base64ToBitmap(base64Image);
+                        Bitmap resizedbit=resizeImageToFitDatabase(bit);
+                        String base64=bitmapToBase64(resizedbit);
+                        setWordImageFromBase64(word, base64);
                         newwords++;
                     }
 
@@ -284,6 +291,39 @@ public class Controller {
                 });
             }
         }).start();
+    }
+
+
+    public Bitmap resizeImageToFitDatabase(Bitmap img) {
+        Bitmap si = img.copy(img.getConfig(), true);
+        int width = si.getWidth();
+        int height = si.getHeight();
+        int min = Math.min(width, height);
+
+        if (min >= 150) {
+            int w = Math.min(min, 220);
+            double r = 1.0 * min / w;
+            int dh = (height - min) / 2;
+            int dw = (width - min) / 2;
+
+            Bitmap bit = Bitmap.createBitmap(w, w, Bitmap.Config.ARGB_8888);
+
+            for (int i = 0; i < w; i++) {
+                for (int j = 0; j < w; j++) {
+                    int x = (int)(i * r + dw);
+                    if (x < 0) x = 0;
+                    else if (x >= width) x = width - 1;
+
+                    int y = (int)(j * r + dh);
+                    if (y < 0) y = 0;
+                    else if (y >= height) y = height - 1;
+
+                    bit.setPixel(i, j, si.getPixel(x, y));
+                }
+            }
+            return bit;
+        }
+        return img; // Return original if no resizing was done
     }
 
     private  void copyFile(File src, File dst) throws Exception {
@@ -586,11 +626,22 @@ public class Controller {
         editor.commit();
     }
 
+    public String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); // Use JPEG
+        byte[] byteArray = outputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.NO_WRAP); // NO_WRAP = compact
+    }
+
+    public Bitmap base64ToBitmap(String base64String) {
+        byte[] decodedBytes = Base64.decode(base64String, Base64.NO_WRAP);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
     private Bitmap StringToWordImage(String imagestr)
     {
         try {
-            byte[] decodedString = Base64.decode(imagestr, Base64.DEFAULT);
-            Bitmap bitmap1 = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);//.copy(Bitmap.Config.ARGB_8888,true);
+
+            Bitmap bitmap1 = base64ToBitmap(imagestr);
             Bitmap bitmap = Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), Bitmap.Config.ARGB_8888);
             for(int i=0;i<bitmap.getWidth();i++) for (int j=0;j<bitmap.getHeight();j++)bitmap.setPixel(i,j,bitmap1.getPixel(i,j));
             int radius = bitmap.getWidth()/5;
@@ -639,12 +690,13 @@ public class Controller {
     {
        return myDB.hasWordImage(word);
     }
-    Bitmap setWordImage(String word,String image)
+    Bitmap setWordImageFromBase64(String word,String image)
     {
-        Cursor currentImage=myDB.getWordImage(word);
-        if(currentImage.getCount()==0)myDB.insertWordImage(word,image);
+        if(!myDB.hasWordImage(word)){
+            myDB.insertWordImage(word,image);
+        }
         else myDB.updateWordImage(word,image);
-       return StringToWordImage(image);
+        return StringToWordImage(image);
     }
 
     public ImageItem[] getAllImages()
